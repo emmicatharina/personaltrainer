@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-import { AgGridReact } from 'ag-grid-react';
 import moment from 'moment';
+import axios from 'axios';
 import MaterialTable from 'material-table';
 
 import AddBox from '@material-ui/icons/AddBox';
@@ -19,24 +19,47 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
-
 function Traininglist() {
+  const api = axios.create({
+    baseURL: 'https://customerrest.herokuapp.com',
+    headers: {
+      "Content-type": "application/json"
+    }
+  })
+
   const [trainings, setTrainings] = useState([]);
   const [columns, setColumns] = useState([
-    { title: 'Date', field: 'date', render: rowData => moment(trainings.date).format("LLL") },
+    { title: 'id', filed: 'id', hidden: true },
+    { title: 'Date', field: 'date', render: rowData => moment(rowData.date).format("LLL") },
     { title: 'Duration', field: 'duration' },
     { title: 'Activity', field: 'activity' },
-    { title: 'First name', field: 'customer.firstname' },
-    { title: 'Last name', field: 'customer.lastname' }
+    { title: 'Customer', field: 'customer.firstname', render: (trainings) => {
+      return `${trainings.customer.firstname} ${trainings.customer.lastname}`;
+    } }
   ])
 
   const fetchTrainings = () => {
-    fetch('https://customerrest.herokuapp.com/gettrainings')
-    .then(response => response.json())
-    .then(data => setTrainings(data))
-    .catch(err => console.error(err))
+    api.get('/gettrainings')
+      .then(res => {
+        setTrainings(res.data)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
+
+  const handleRowDelete = (oldData, resolve) => {
+    api.delete('/api/trainings/' + oldData.id)
+    .then(res => {
+      const dataDelete = [...trainings];
+      const index = oldData.tableData.id;
+      dataDelete.splice(index, 1);
+      setTrainings([...dataDelete]);
+      resolve()
+    })
+    .catch(err => {
+      console.error(err)
+    }) 
   }
 
   useEffect(() => {
@@ -65,17 +88,20 @@ function Traininglist() {
 
 
   return (
-    <div style={{ maxWidth: '90%' }}>
-      <MaterialTable 
+    <div style={{ width: '90%' }}>
+      <MaterialTable
         columns={columns}
         data={trainings}
         title="Trainings"
         icons={tableIcons}
         editable={{
-          
+          onRowDelete: (oldData) =>
+            new Promise((resolve) => (
+              handleRowDelete(oldData, resolve)
+          )), 
         }}
       />
-  </div>
+    </div>
   );
 }
 

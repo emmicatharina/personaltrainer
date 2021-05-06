@@ -1,10 +1,12 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import moment from 'moment';
+//import moment from 'moment';
+import axios from 'axios';
 import MaterialTable from 'material-table';
+import AddTraining from './AddTraining';
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import Button from "@material-ui/core/Button";
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
@@ -19,41 +21,100 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
-
 function Customerlist() {
+  const api = axios.create({
+    baseURL: 'https://customerrest.herokuapp.com/api',
+    headers: {
+      "Content-type": "application/json"
+    }
+  })
+
   const [customers, setCustomers] = useState([]);
   const [columns, setColumns] = useState([
+    { editable: 'never', field: 'links[0].href', render: (rowData =>
+      <AddTraining customer={rowData} addTraining={addTraining} />)},
     { title: 'First name', field: 'firstname' },
     { title: 'Last name', field: 'lastname' },
     { title: 'Email', field: 'email' },
     { title: 'Phone', field: 'phone' },
-    { title: 'Street', field: 'streetaddress' },
+    { title: 'Address', field: 'streetaddress' },
     { title: 'Post code', field: 'postcode' },
     { title: 'City', field: 'city' }
   ])
 
   const fetchCustomers = () => {
-    fetch('https://customerrest.herokuapp.com/api/customers')
-    .then(response => response.json())
-    .then(data => setCustomers(data.content))
-    .catch(err => console.error(err))
+    api.get('/customers')
+      .then(res => {
+        setCustomers(res.data.content)
+      })
+      .catch(err => {
+        console.error(err)
+      })
   }
 
   useEffect(() => {
     fetchCustomers();
   }, []);
 
-  /*const columns = [
-    { headerName: 'First name', field: 'firstname', sortable: true, filter: true },
-    { headerName: 'Last name', field: 'lastname', sortable: true, filter: true },
-    { field: 'email', sortable: true, filter: true },
-    { field: 'phone', sortable: true, filter: true },
-    { headerName: 'Street', field: 'streetaddress', sortable: true, filter: true },
-    { headerName: 'Post code', field: 'postcode', sortable: true, filter: true },
-    { field: 'city', sortable: true, filter: true },
-  ]*/
+  const handleRowUpdate = (newData, oldData, resolve) => {
+    api.put(newData.links[1].href, newData)
+    .then(res => {
+      const dataUpdate = [...customers];
+        const index = oldData.tableData.id;
+        dataUpdate[index] = newData;
+        setCustomers([...dataUpdate]);
+        resolve()
+      })
+      .catch(err => {
+        console.error(err)
+        resolve()
+      })
+  }
+
+  const handleRowAdd = (newData, resolve) => {
+    api.post('/customers', newData)
+    .then(res => {
+      let dataToAdd = [...customers];
+      dataToAdd.push(newData);
+      setCustomers(dataToAdd);
+      resolve()
+    })
+    .catch(err => {
+      console.error(err)
+      resolve()
+    })
+  }
+
+  const handleRowDelete = (oldData, resolve) => {
+    api.delete(oldData.links[1].href)
+    .then(res => {
+      const dataDelete = [...customers];
+      const index = oldData.tableData.id;
+      dataDelete.splice(index, 1);
+      setCustomers([...dataDelete]);
+      resolve()
+    })
+    .catch(err => {
+      console.error(err)
+      resolve()
+    }) 
+  }
+
+  const addTraining = (newTraining) => {
+    fetch('https://customerrest.herokuapp.com/api/trainings', {
+      method: 'POST',
+      body: JSON.stringify(newTraining),
+      headers: { 'Content-type' : 'application/json' }
+    })
+    .then(response => {
+      if (response.ok) {
+        fetchCustomers()
+      } else {
+        alert('Something went wrong!')
+      }
+    })
+    .catch(err => console.error(err))
+}
 
   const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -83,7 +144,18 @@ function Customerlist() {
           title="Customers"
           icons={tableIcons}
           editable={{
-            
+            onRowUpdate: (newData, oldData) =>
+            new Promise((resolve) => {
+              handleRowUpdate(newData, oldData, resolve);
+            }),
+           onRowAdd: (newData) =>
+            new Promise((resolve) => {
+              handleRowAdd(newData, resolve)
+            }),
+          onRowDelete: (oldData) =>
+            new Promise((resolve) => (
+              handleRowDelete(oldData, resolve)
+          )), 
           }}
         />
       </div>

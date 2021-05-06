@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Customerlist from './components/Customerlist';
@@ -9,9 +9,9 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Snackbar,
+  //Snackbar,
   Drawer,
-  Button,
+  //Button,
   List,
   Divider,
   ListItem,
@@ -19,15 +19,13 @@ import {
   ListItemText,
   CssBaseline
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
 import PeopleIcon from '@material-ui/icons/People';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
-import EventIcon from '@material-ui/icons/Event';
-import EqualizerIcon from '@material-ui/icons/Equalizer';
+//import EventIcon from '@material-ui/icons/Event';
+//import EqualizerIcon from '@material-ui/icons/Equalizer';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-
 
 
 function App() {
