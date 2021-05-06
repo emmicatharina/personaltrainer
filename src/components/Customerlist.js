@@ -1,12 +1,10 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-//import moment from 'moment';
 import axios from 'axios';
 import MaterialTable from 'material-table';
 import AddTraining from './AddTraining';
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import Button from "@material-ui/core/Button";
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
@@ -60,10 +58,11 @@ function Customerlist() {
     api.put(newData.links[1].href, newData)
     .then(res => {
       const dataUpdate = [...customers];
-        const index = oldData.tableData.id;
-        dataUpdate[index] = newData;
-        setCustomers([...dataUpdate]);
-        resolve()
+      const index = oldData.tableData.id;
+      dataUpdate[index] = newData;
+      setCustomers([...dataUpdate]);
+      fetchCustomers();
+      resolve()
       })
       .catch(err => {
         console.error(err)
@@ -77,6 +76,7 @@ function Customerlist() {
       let dataToAdd = [...customers];
       dataToAdd.push(newData);
       setCustomers(dataToAdd);
+      fetchCustomers();
       resolve()
     })
     .catch(err => {
@@ -92,6 +92,7 @@ function Customerlist() {
       const index = oldData.tableData.id;
       dataDelete.splice(index, 1);
       setCustomers([...dataDelete]);
+      fetchCustomers();
       resolve()
     })
     .catch(err => {
@@ -137,7 +138,7 @@ function Customerlist() {
   };
 
   return (
-      <div style={{ maxWidth: '90%' }}>
+      <div>
         <MaterialTable 
           columns={columns}
           data={customers}

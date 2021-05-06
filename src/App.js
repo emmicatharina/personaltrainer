@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Customerlist from './components/Customerlist';
 import Traininglist from './components/Traininglist';
+import Calendar from './components/Calendar';
 
 import {
   AppBar,
@@ -21,7 +22,7 @@ import {
 } from '@material-ui/core';
 import PeopleIcon from '@material-ui/icons/People';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
-//import EventIcon from '@material-ui/icons/Event';
+import EventIcon from '@material-ui/icons/Event';
 //import EqualizerIcon from '@material-ui/icons/Equalizer';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -146,6 +147,10 @@ function App() {
             <ListItemText primary={'Trainings'} />
           </ListItem>
           <Divider />
+          <ListItem button key={'Calendar'} onClick={() => setValue('Calendar')}>
+            <ListItemIcon><EventIcon /></ListItemIcon>
+            <ListItemText primary={'Calendar'} />
+          </ListItem>
         </List>
       </Drawer>
       <main
@@ -156,6 +161,7 @@ function App() {
         <div className={classes.drawerHeader} />
         {value === 'Customers' && <Customerlist />}
         {value === 'Trainings' && <Traininglist />}
+        {value === 'Calendar' && <Calendar />}
         </main>
     </div>
   );

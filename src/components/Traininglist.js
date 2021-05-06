@@ -55,6 +55,7 @@ function Traininglist() {
       const index = oldData.tableData.id;
       dataDelete.splice(index, 1);
       setTrainings([...dataDelete]);
+      fetchTrainings();
       resolve()
     })
     .catch(err => {
@@ -88,7 +89,7 @@ function Traininglist() {
 
 
   return (
-    <div style={{ width: '90%' }}>
+    <div>
       <MaterialTable
         columns={columns}
         data={trainings}

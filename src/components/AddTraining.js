@@ -7,6 +7,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import AddIcon from '@material-ui/icons/Add';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 function AddTraining(props) {
@@ -42,9 +44,9 @@ function AddTraining(props) {
 
   return (
     <div>
-      <Button style={{ marginTop: 10 }} variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add training
-            </Button>
+      <Button color="primary" onClick={handleClickOpen}>
+        <AddIcon/> <DirectionsRunIcon/>
+      </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">New training</DialogTitle>
         <DialogContent>
