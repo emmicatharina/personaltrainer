@@ -12,7 +12,6 @@ import {
   IconButton,
   //Snackbar,
   Drawer,
-  //Button,
   List,
   Divider,
   ListItem,
@@ -23,7 +22,6 @@ import {
 import PeopleIcon from '@material-ui/icons/People';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import EventIcon from '@material-ui/icons/Event';
-//import EqualizerIcon from '@material-ui/icons/Equalizer';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';

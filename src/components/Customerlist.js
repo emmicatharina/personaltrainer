@@ -28,9 +28,12 @@ function Customerlist() {
   })
 
   const [customers, setCustomers] = useState([]);
+  const [trainings, setTrainings] = useState([]);
   const [columns, setColumns] = useState([
-    { editable: 'never', field: 'links[0].href', render: (rowData =>
-      <AddTraining customer={rowData} addTraining={addTraining} />)},
+    {
+      editable: 'never', field: 'links[0].href', render: (rowData =>
+        <AddTraining customer={rowData} addTraining={addTraining} />)
+    },
     { title: 'First name', field: 'firstname' },
     { title: 'Last name', field: 'lastname' },
     { title: 'Email', field: 'email' },
@@ -56,13 +59,13 @@ function Customerlist() {
 
   const handleRowUpdate = (newData, oldData, resolve) => {
     api.put(newData.links[1].href, newData)
-    .then(res => {
-      const dataUpdate = [...customers];
-      const index = oldData.tableData.id;
-      dataUpdate[index] = newData;
-      setCustomers([...dataUpdate]);
-      fetchCustomers();
-      resolve()
+      .then(res => {
+        const dataUpdate = [...customers];
+        const index = oldData.tableData.id;
+        dataUpdate[index] = newData;
+        setCustomers([...dataUpdate]);
+        fetchCustomers();
+        resolve()
       })
       .catch(err => {
         console.error(err)
@@ -72,50 +75,50 @@ function Customerlist() {
 
   const handleRowAdd = (newData, resolve) => {
     api.post('/customers', newData)
-    .then(res => {
-      let dataToAdd = [...customers];
-      dataToAdd.push(newData);
-      setCustomers(dataToAdd);
-      fetchCustomers();
-      resolve()
-    })
-    .catch(err => {
-      console.error(err)
-      resolve()
-    })
+      .then(res => {
+        let dataToAdd = [...customers];
+        dataToAdd.push(newData);
+        setCustomers(dataToAdd);
+        fetchCustomers();
+        resolve()
+      })
+      .catch(err => {
+        console.error(err)
+        resolve()
+      })
   }
 
   const handleRowDelete = (oldData, resolve) => {
     api.delete(oldData.links[1].href)
-    .then(res => {
-      const dataDelete = [...customers];
-      const index = oldData.tableData.id;
-      dataDelete.splice(index, 1);
-      setCustomers([...dataDelete]);
-      fetchCustomers();
-      resolve()
-    })
-    .catch(err => {
-      console.error(err)
-      resolve()
-    }) 
+      .then(res => {
+        const dataDelete = [...customers];
+        const index = oldData.tableData.id;
+        dataDelete.splice(index, 1);
+        setCustomers([...dataDelete]);
+        fetchCustomers();
+        resolve()
+      })
+      .catch(err => {
+        console.error(err)
+        resolve()
+      })
   }
 
   const addTraining = (newTraining) => {
     fetch('https://customerrest.herokuapp.com/api/trainings', {
       method: 'POST',
       body: JSON.stringify(newTraining),
-      headers: { 'Content-type' : 'application/json' }
+      headers: { 'Content-type': 'application/json' }
     })
-    .then(response => {
-      if (response.ok) {
-        fetchCustomers()
-      } else {
-        alert('Something went wrong!')
-      }
-    })
-    .catch(err => console.error(err))
-}
+      .then(response => {
+        if (response.ok) {
+          fetchCustomers()
+        } else {
+          alert('Something went wrong!')
+        }
+      })
+      .catch(err => console.error(err))
+  }
 
   const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -138,28 +141,28 @@ function Customerlist() {
   };
 
   return (
-      <div>
-        <MaterialTable 
-          columns={columns}
-          data={customers}
-          title="Customers"
-          icons={tableIcons}
-          editable={{
-            onRowUpdate: (newData, oldData) =>
+    <div>
+      <MaterialTable
+        columns={columns}
+        data={customers}
+        title="Customers"
+        icons={tableIcons}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
             new Promise((resolve) => {
               handleRowUpdate(newData, oldData, resolve);
             }),
-           onRowAdd: (newData) =>
+          onRowAdd: (newData) =>
             new Promise((resolve) => {
               handleRowAdd(newData, resolve)
             }),
           onRowDelete: (oldData) =>
             new Promise((resolve) => (
               handleRowDelete(oldData, resolve)
-          )), 
-          }}
-        />
-      </div>
+            )),
+        }}
+      />
+    </div>
   );
 }
 
