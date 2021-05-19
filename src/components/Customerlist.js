@@ -28,8 +28,7 @@ function Customerlist() {
   })
 
   const [customers, setCustomers] = useState([]);
-  const [trainings, setTrainings] = useState([]);
-  const [columns, setColumns] = useState([
+  const columns = [
     {
       editable: 'never', field: 'links[0].href', render: (rowData =>
         <AddTraining customer={rowData} addTraining={addTraining} />)
@@ -41,7 +40,7 @@ function Customerlist() {
     { title: 'Address', field: 'streetaddress' },
     { title: 'Post code', field: 'postcode' },
     { title: 'City', field: 'city' }
-  ])
+  ];
 
   const fetchCustomers = () => {
     api.get('/customers')
@@ -55,6 +54,7 @@ function Customerlist() {
 
   useEffect(() => {
     fetchCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRowUpdate = (newData, oldData, resolve) => {

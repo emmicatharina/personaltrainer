@@ -111,6 +111,7 @@ function Calendar() {
 
   useEffect(() => {
     getData(setData, setLoading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setData, currentViewName, currentDate]);
 
   return (

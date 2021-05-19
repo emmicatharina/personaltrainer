@@ -28,7 +28,7 @@ function Traininglist() {
   })
 
   const [trainings, setTrainings] = useState([]);
-  const [columns, setColumns] = useState([
+  const columns = [
     { title: 'id', filed: 'id', hidden: true },
     { title: 'Date', field: 'date', render: rowData => moment(rowData.date).format("LLL") },
     { title: 'Duration', field: 'duration' },
@@ -36,7 +36,7 @@ function Traininglist() {
     { title: 'Customer', field: 'customer.firstname', render: (trainings) => {
       return `${trainings.customer.firstname} ${trainings.customer.lastname}`;
     } }
-  ])
+  ]
 
   const fetchTrainings = () => {
     api.get('/gettrainings')
@@ -65,6 +65,7 @@ function Traininglist() {
 
   useEffect(() => {
     fetchTrainings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const tableIcons = {
