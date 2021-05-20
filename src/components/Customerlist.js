@@ -3,6 +3,8 @@ import axios from 'axios';
 import MaterialTable from 'material-table';
 import AddTraining from './AddTraining';
 
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -28,6 +30,9 @@ function Customerlist() {
   })
 
   const [customers, setCustomers] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [severity, setSeverity] = useState('');
   const columns = [
     {
       editable: 'never', field: 'links[0].href', render: (rowData =>
@@ -51,6 +56,14 @@ function Customerlist() {
         console.error(err)
       })
   }
+  
+  const openSnackbar = () => {
+    setOpen(true);
+  }
+
+  const closeSnackbar = () => {
+    setOpen(false);
+  }
 
   useEffect(() => {
     fetchCustomers();
@@ -64,6 +77,9 @@ function Customerlist() {
         const index = oldData.tableData.id;
         dataUpdate[index] = newData;
         setCustomers([...dataUpdate]);
+        setMsg('Customer updated succesfully!')
+        setSeverity('success');
+        openSnackbar();
         fetchCustomers();
         resolve()
       })
@@ -79,6 +95,9 @@ function Customerlist() {
         let dataToAdd = [...customers];
         dataToAdd.push(newData);
         setCustomers(dataToAdd);
+        setMsg('Customer added succesfully!')
+        setSeverity('success');
+        openSnackbar();
         fetchCustomers();
         resolve()
       })
@@ -95,6 +114,9 @@ function Customerlist() {
         const index = oldData.tableData.id;
         dataDelete.splice(index, 1);
         setCustomers([...dataDelete]);
+        setMsg('Customer deleted succesfully!')
+        setSeverity('success');
+        openSnackbar();
         fetchCustomers();
         resolve()
       })
@@ -112,9 +134,14 @@ function Customerlist() {
     })
       .then(response => {
         if (response.ok) {
+          setMsg('Training added succesfully!')
+          setSeverity('success');
+          openSnackbar();
           fetchCustomers()
         } else {
-          alert('Something went wrong!')
+          setMsg('Something went wrong!')
+          setSeverity('error');
+          openSnackbar();
         }
       })
       .catch(err => console.error(err))
@@ -140,6 +167,8 @@ function Customerlist() {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
+  
+
   return (
     <div>
       <MaterialTable
@@ -162,6 +191,15 @@ function Customerlist() {
             )),
         }}
       />
+      <Snackbar 
+        open={open}
+        autoHideDuration={3000}
+        onClose={closeSnackbar}
+      >
+        <Alert onClose={closeSnackbar} severity={severity}>
+          {msg}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

@@ -2,9 +2,6 @@
   "name": "personaltrainer",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "12.x"
-  },
   "dependencies": {
     "@devexpress/dx-react-chart": "^2.7.5",
     "@devexpress/dx-react-chart-material-ui": "^2.7.5",
@@ -13,6 +10,7 @@
     "@devexpress/dx-react-scheduler-material-ui": "^2.7.5",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",

@@ -3,6 +3,8 @@ import moment from 'moment';
 import axios from 'axios';
 import MaterialTable from 'material-table';
 
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -28,6 +30,9 @@ function Traininglist() {
   })
 
   const [trainings, setTrainings] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [severity, setSeverity] = useState('');
   const columns = [
     { title: 'id', filed: 'id', hidden: true },
     { title: 'Date', field: 'date', render: rowData => moment(rowData.date).format("LLL") },
@@ -55,12 +60,23 @@ function Traininglist() {
       const index = oldData.tableData.id;
       dataDelete.splice(index, 1);
       setTrainings([...dataDelete]);
+      setMsg('Training deleted succesfully!')
+      setSeverity('success');
+      openSnackbar();
       fetchTrainings();
       resolve()
     })
     .catch(err => {
       console.error(err)
     }) 
+  }
+
+  const openSnackbar = () => {
+    setOpen(true);
+  }
+
+  const closeSnackbar = () => {
+    setOpen(false);
   }
 
   useEffect(() => {
@@ -88,7 +104,6 @@ function Traininglist() {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
-
   return (
     <div>
       <MaterialTable
@@ -103,6 +118,15 @@ function Traininglist() {
           )), 
         }}
       />
+      <Snackbar 
+        open={open}
+        autoHideDuration={3000}
+        onClose={closeSnackbar}
+      >
+        <Alert onClose={closeSnackbar} severity={severity}>
+          {msg}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
