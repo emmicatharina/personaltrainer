@@ -167,8 +167,6 @@ function Customerlist() {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
-  
-
   return (
     <div>
       <MaterialTable
